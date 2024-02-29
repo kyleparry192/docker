@@ -1,0 +1,36 @@
+services:    
+  adguardhome:
+    image: adguard/adguardhome
+    container_name: adguardhome
+    volumes:
+      - /volume1/docker/adguard/conf:/opt/adguardhome/conf
+      - /volume1/docker/adguard/work:/opt/adguardhome/work
+    networks:
+      macvlan:
+        ipv4_address: 192.168.50.3
+      bridge:
+        ipv4_address: 192.168.5.3
+    security_opt:
+      - no-new-privileges:true
+    restart: always
+networks:
+  macvlan:
+    name: macvlan
+    driver: macvlan
+    driver_opts:
+      parent: eth0
+    ipam:
+      config:
+        - subnet: "192.168.50.0/24"
+          ip_range: "192.168.50.254/24"
+          gateway: "192.168.50.1"
+  bridge:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "192.168.5.0/24"
+          ip_range: "192.168.5.2/32"
+          gateway: "192.168.5.1"
+  network:
+    name: network
+    external: true
